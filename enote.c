@@ -17,11 +17,12 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/stat.h>
 #include <string.h>
+#include <stdlib.h>
+
+#include <unistd.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 
 const char *dir_name = ".enote/";
 const int MAX_CHAR = 255;
@@ -69,7 +70,7 @@ void read_note(char *path) {
 	char temp[MAX_CHAR];
 	FILE *f = fopen(path, "r");
 	if (f == NULL) {
-		fprintf(stderr, "ERROR: Failed to read note\n");
+		fprintf(stderr, "enote: ERROR: Failed to read note\n");
 		return;
 	}
 
@@ -85,7 +86,7 @@ void read_note(char *path) {
 void delete_note(char *path) {
 	int result = remove(path);
 	if (result != 0) {
-		fprintf(stderr, "ERROR: Failed to delete note \n");
+		fprintf(stderr, "enote: ERROR: Failed to delete note \n");
 		return;
 	}
 
@@ -97,7 +98,7 @@ int main(int argc, char *argv[]) {
 	char note_name[MAX_CHAR];
 
 	if (argc < 3) {
-		fprintf(stderr, "ERROR: Provide option and note \n");
+		fprintf(stderr, "enote: ERROR: Provide option and note \n");
 		return 1;
 	}
 
