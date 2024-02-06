@@ -17,9 +17,32 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #include <string.h>
+#include <fcntl.h>
 
+const char *dir_name = ".enote/";
 const int MAX_CHAR = 255;
+
+int check_dir(char *path) {
+	int fd = open(path, O_RDONLY);
+	if (fd != -1) {
+		close(fd);
+		return 0;
+	}
+
+	printf("enote: NOTICE: Note directory not found, creating new one\n");
+
+	int result = mkdir(path, 0770);
+	if (result == -1) {
+		fprintf(stderr, "enote: ERROR: Failed to create note directory\n");
+		exit(1);
+	}
+
+	return 0;
+}
 
 void write_note(char *path) {
 	char temp[MAX_CHAR];
@@ -70,6 +93,7 @@ void delete_note(char *path) {
 }
 
 int main(int argc, char *argv[]) {
+	char *dir_path = strncat(getenv("HOME"), dir_name, MAX_CHAR);
 	char note_name[MAX_CHAR];
 
 	if (argc < 3) {
@@ -77,17 +101,19 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
+	check_dir(dir_path);
 	strncpy(note_name, argv[2], MAX_CHAR);
+	char *file = strncat(dir_path, note_name, MAX_CHAR);
 
 	switch (argv[1][1]) {
 	case 'w':
-		write_note(note_name);
+		write_note(file);
 		break;
 	case 'r':
-		read_note(note_name);
+		read_note(file);
 		break;
 	case 'd':
-		delete_note(note_name);		
+		delete_note(file);		
 		break;
 	default:
 		printf("usage: enote [OPTION] [FILE/NOTE]\n\n");
