@@ -97,7 +97,11 @@ int main(int argc, char *argv[]) {
 	char *dir_path = strncat(getenv("HOME"), dir_name, MAX_CHAR);
 	char note_name[MAX_CHAR];
 
-	if (argc < 3) {
+	if (argc == 1 || (argc == 2 && argv[1][1] == 'h')) {
+		printf("usage: enote [OPTION] [FILE/NOTE]\n\n");
+		printf("-w\tWrite a new note\n-r\tRead a note\n-d\tDelete a note\n");
+		return 0;
+	} else if (argc < 3) {
 		fprintf(stderr, "enote: ERROR: Provide option and note \n");
 		return 1;
 	}
@@ -117,7 +121,7 @@ int main(int argc, char *argv[]) {
 		delete_note(file);		
 		break;
 	default:
-		printf("usage: enote [OPTION] [FILE/NOTE]\n\n");
+		fprintf(stderr, "enote: ERROR: Invalid option \n\n");
 		printf("-w\tWrite a new note\n-r\tRead a note\n-d\tDelete a note\n");
 	}
 
