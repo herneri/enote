@@ -1,0 +1,11 @@
+enote allows notes to be written on the CLI in a simple manner without
+unneeded features. Instead of trying to manage scattered text files,
+users can manage their notes in one place on their Unix-like system.
+
+enote provides the following options:
+
+-w		Write a new note, use ">E" to finish writing
+-r		Read a note
+-d		Delete a note
+-l		List all current notes
+-lc		List all notes in columns
