@@ -77,7 +77,6 @@ void write_note(char *path) {
 		return;
 	}
 
-	printf("Writing to '%s': \n", path);
 	while (1) {
 		fgets(temp, MAX_CHAR, stdin);
 		if (strcmp(temp, ">E\n") == 0) {
@@ -99,7 +98,6 @@ void read_note(char *path) {
 		return;
 	}
 
-	printf("Reading from '%s': \n\n", path);
 	while (fgets(temp, MAX_CHAR, f) != NULL) {
 		printf("%s", temp);
 	}
