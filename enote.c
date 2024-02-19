@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <dirent.h>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -43,6 +44,30 @@ int check_dir(char *path) {
 	}
 
 	return 0;
+}
+
+void list_dir(char *path, const char mode) {
+	DIR *enote_dir;
+	struct dirent *entry;
+
+	enote_dir = opendir(path);
+	while ((entry = readdir(enote_dir)) != NULL) {
+		if (entry->d_type == DT_DIR) {
+			continue;
+		}
+
+		if (mode == 'd') {
+			printf("%s \n", entry->d_name);
+			continue;
+		} else if (mode == 'c') {
+			printf("%s \t", entry->d_name);
+			continue;
+		}
+	}
+
+	printf("\n");
+	closedir(enote_dir);
+	return;
 }
 
 void write_note(char *path) {
@@ -99,14 +124,32 @@ int main(int argc, char *argv[]) {
 
 	if (argc == 1 || (argc == 2 && argv[1][1] == 'h')) {
 		printf("usage: enote [OPTION] [FILE/NOTE]\n\n");
-		printf("-w\tWrite a new note\n-r\tRead a note\n-d\tDelete a note\n");
+		printf("-w\tWrite a new note\n-r\tRead a note\n-d\tDelete a note\n-l\tList enote entries\n");
 		return 0;
-	} else if (argc < 3) {
-		fprintf(stderr, "enote: ERROR: Provide option and note \n");
-		return 1;
 	}
 
 	check_dir(dir_path);
+
+	if (argc == 2 && argv[1][1] == 'l') {
+		if (strlen(argv[1]) != 3) {
+			list_dir(dir_path, 'd');
+			return 0;
+		}
+
+		if (argv[1][2] != 'c') {
+			fprintf(stderr, "enote: Invalid listing mode, enter -l or -lc for default or column listing \n");
+			return 1;
+		}
+
+		list_dir(dir_path, 'c');
+		return 0;
+	}
+
+	if (argc < 3) {
+		fprintf(stderr, "enote: Invalid arguments \n");
+		return 1;
+	}
+
 	strncpy(note_name, argv[2], MAX_CHAR);
 	char *file = strncat(dir_path, note_name, MAX_CHAR);
 
@@ -122,7 +165,7 @@ int main(int argc, char *argv[]) {
 		break;
 	default:
 		fprintf(stderr, "enote: ERROR: Invalid option \n\n");
-		printf("-w\tWrite a new note\n-r\tRead a note\n-d\tDelete a note\n");
+		printf("-w\tWrite a new note\n-r\tRead a note\n-d\tDelete a note\n-l\tList enote entries\n");
 	}
 
 	return 0;
