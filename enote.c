@@ -25,7 +25,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-const char *dir_name = ".enote/";
+const char *dir_name = "/.enote/";
 const int MAX_CHAR = 255;
 
 int check_dir(char *path) {
